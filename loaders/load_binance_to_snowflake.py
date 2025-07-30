@@ -2,14 +2,16 @@ from snowflake.connector import DictCursor
 from datetime import datetime
 import pandas as pd
 import requests
+from utils.snowflake_conn import get_connection
+
 
 pairs = ['PEPEUSDT', 'ORDIUSDT', '1000FLOKIUSDT', 'BIGTIMEUSDT', 'WIFUSDT', 'DOGEUSDT']
 columns_full = [
-    'open_time', 'open', 'high', 'low', 'close', 'volume',
+    'open_time', 'open_price', 'high_price', 'low_price', 'close_price', 'volume',
     'close_time', 'quote_asset_volume', 'number_of_trades',
     'taker_buy_base', 'taker_buy_quote', 'ignore'
 ]
-columns = ['open_time', 'open', 'high', 'low', 'close', 'volume']
+columns = ['open_time', 'open_price', 'high_price', 'low_price', 'close_price', 'volume']
 
 results = []
 
@@ -29,12 +31,25 @@ for pair in pairs:
 
 # Concatenate all DataFrames in the results list
 final_df = pd.concat(results, ignore_index=True)
-final_df['open_time'] = pd.to_datetime(final_df['open_time'], unit='ms')
 # Convert columns to appropriate data types
-final_df['open'] = pd.to_numeric(final_df['open'])
-final_df['high'] = pd.to_numeric(final_df['high'])
-final_df['low'] = pd.to_numeric(final_df['low'])
-final_df['close'] = pd.to_numeric(final_df['close'])
+final_df["open_time"] = pd.to_numeric(final_df['open_time'])
+final_df['open_price'] = pd.to_numeric(final_df['open_price'])
+final_df['high_price'] = pd.to_numeric(final_df['high_price'])
+final_df['low_price'] = pd.to_numeric(final_df['low_price'])
+final_df['close_price'] = pd.to_numeric(final_df['close_price'])
 final_df['volume'] = pd.to_numeric(final_df['volume'])
 
-print(final_df)
+print(f"""dataset {final_df} must be withhout ) 0 values in open price, high price, low price, close price""")
+
+query = f"""INSERT INTO TRADING_DB.RAW.CRYPTO_PRICES (symbol, open_time, open_price, high_price, low_price, close_price, volume) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s) """
+list_of_values = list(final_df.itertuples(index=False, name=None))
+conn = get_connection()
+cursor = conn.cursor(DictCursor)
+cursor.execute("USE DATABASE TRADING_DB")
+cursor.execute("USE SCHEMA RAW")
+cursor.execute("USE WAREHOUSE TRADING_WH")
+cursor.execute("TRUNCATE TABLE CRYPTO_PRICES")
+cursor.executemany(query, list_of_values)
+conn.commit()
+cursor.close()
