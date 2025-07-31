@@ -1,4 +1,6 @@
-CREATE OR REPLACE TABLE RAW.CRYPTO_PRICES (
+-- EXECUTE SCRIPT ONLY ONCE --
+-- This script creates the necessary schemas for the Snowflake database used in the crypto trading pipeline.
+CREATE OR REPLACE TABLE BRONZE.CRYPTO_PRICES (
     id INT AUTOINCREMENT,
     symbol STRING NOT NULL,
     open_time INT,

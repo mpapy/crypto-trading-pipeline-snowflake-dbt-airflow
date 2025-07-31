@@ -1,0 +1,51 @@
+version: 2
+
+models:
+  - name: stg_crypto_prices
+    description: "Čištěná data z Binance – SILVER vrstva"
+    columns:
+      - name: ID
+        description: "Unikátní ID řádku"
+        tests:
+          - not_null
+          - unique
+
+      - name: SYMBOL
+        description: "Ticker kryptoměny"
+        tests:
+          - not_null
+
+      - name: OPEN_TIME
+        description: "Unix timestamp otevření svíčky"
+        tests:
+          - not_null
+
+      - name: OPEN_PRICE
+        description: "Otevírací cena"
+        tests:
+          - not_null
+
+      - name: HIGH_PRICE
+        description: "High cena"
+        tests:
+          - not_null
+
+      - name: LOW_PRICE
+        description: "Low cena"
+        tests:
+          - not_null
+
+      - name: CLOSE_PRICE
+        description: "Zavírací cena"
+        tests:
+          - not_null
+
+      - name: VOLUME
+        description: "Objem obchodování"
+        tests:
+          - not_null
+
+      - name: CREATED_AT
+        description: "Čas vytvoření"
+        tests:
+          - not_null

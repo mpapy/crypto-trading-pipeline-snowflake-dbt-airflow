@@ -41,13 +41,13 @@ final_df['volume'] = pd.to_numeric(final_df['volume'])
 
 print(f"""dataset {final_df} must be withhout ) 0 values in open price, high price, low price, close price""")
 
-query = f"""INSERT INTO TRADING_DB.RAW.CRYPTO_PRICES (symbol, open_time, open_price, high_price, low_price, close_price, volume) 
+query = f"""INSERT INTO TRADING_DB.BRONZE.CRYPTO_PRICES (symbol, open_time, open_price, high_price, low_price, close_price, volume) 
             VALUES (%s, %s, %s, %s, %s, %s, %s) """
 list_of_values = list(final_df.itertuples(index=False, name=None))
 conn = get_connection()
 cursor = conn.cursor(DictCursor)
 cursor.execute("USE DATABASE TRADING_DB")
-cursor.execute("USE SCHEMA RAW")
+cursor.execute("USE SCHEMA BRONZE")
 cursor.execute("USE WAREHOUSE TRADING_WH")
 cursor.execute("TRUNCATE TABLE CRYPTO_PRICES")
 cursor.executemany(query, list_of_values)
