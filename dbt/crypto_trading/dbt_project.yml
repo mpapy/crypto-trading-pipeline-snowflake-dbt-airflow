@@ -15,16 +15,15 @@ clean-targets:
   - "dbt_packages"
 
 models:
-  crypto_trading:
-    +materialized: view
+  crypto_trading:               # odpovídá složce models/crypto_trading/
 
-    silver:
+    silver:                     # models/crypto_trading/silver/
       +schema: SILVER
       +materialized: view
 
-    gold:
+    gold:                       # models/crypto_trading/gold/
       +schema: GOLD
       +materialized: view
 
     example:
-      +enabled: false
+      +enabled: false           # vypnuté ukázkové modely
