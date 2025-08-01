@@ -1,0 +1,20 @@
+version: 2
+
+models:
+  - name: agg_crypto_daily
+    description: "Daily aggregated crypto volume by symbol"
+    columns:
+      - name: day
+        tests:
+          - not_null
+      - name: SYMBOL
+        tests:
+          - not_null
+      - name: total_volume
+        tests:
+          - not_null
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - day
+            - SYMBOL
