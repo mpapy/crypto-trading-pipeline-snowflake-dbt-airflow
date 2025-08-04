@@ -12,19 +12,20 @@ with DAG(
     dag_id="dbt_trading_pipeline",
     default_args=default_args,
     start_date=datetime(2024, 1, 1),
-    schedule_interval=None,
+    schedule_interval="0 6 * * *",
     catchup=False,
     tags=["crypto", "dbt"]
 ) as dag:
 
     dbt_run = BashOperator(
         task_id="dbt_run",
-        bash_command="dbt run --project-dir /opt/airflow/dbt/crypto_trading"
+        bash_command="dbt run --project-dir /opt/airflow/dbt/crypto_trading --profiles-dir /opt/airflow/profiles"
+
     )
 
     dbt_test = BashOperator(
         task_id="dbt_test",
-        bash_command="dbt test --project-dir /opt/airflow/dbt/crypto_trading"
+        bash_command="dbt test --project-dir /opt/airflow/dbt/crypto_trading --profiles-dir /opt/airflow/profiles"
     )
 
     dbt_run >> dbt_test

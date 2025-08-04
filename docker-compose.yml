@@ -6,6 +6,8 @@ x-airflow-common:
   build:
     context: .
     dockerfile: Dockerfile
+  env_file:
+    - .env   # ← přidáno
   environment:
     &airflow-env
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
@@ -14,9 +16,12 @@ x-airflow-common:
     AIRFLOW__WEBSERVER__WEB_SERVER_PORT: 8080
   volumes:
     - ./dags:/opt/airflow/dags
+    - ./include:/opt/airflow/include
     - ./dbt:/opt/airflow/dbt
     - ./scripts:/opt/airflow/scripts
-    - ./include:/opt/airflow/include
+    - ./data:/opt/airflow/data
+    - ./logs:/opt/airflow/logs
+    - ./profiles:/opt/airflow/profiles
   depends_on:
     postgres:
       condition: service_healthy
